@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A Message For You</title>
+<style>
+:root{--bg:#fff7f5;--card:#fff;--tx:#2b1d1f;--mu:#7a6468;--ac:#b83a56;--ac2:#f6d9df;--bd:#ecd5d9;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#1c1416;--card:#2a1d20;--tx:#f6e9ec;--mu:#b9a1a6;--ac:#e8718b;--ac2:#3b2328;--bd:#4a3238}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:Georgia,'Times New Roman',serif;line-height:1.6}
+header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--bd);position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+nav{display:flex;gap:4px;overflow-x:auto;max-width:100%}
+nav button,.lang button{font:inherit;font-size:14px;border:0;background:none;color:var(--mu);padding:6px 10px;border-radius:16px;cursor:pointer;white-space:nowrap}
+nav button.on,.lang button.on{background:var(--ac2);color:var(--ac);font-weight:bold}
+main{max-width:640px;margin:0 auto;padding:24px 18px 48px}
+section{display:none}section.on{display:block}
+h1{font-size:2.1rem;line-height:1.2;margin:.4em 0}h2{color:var(--ac)}
+.btn{display:inline-block;background:var(--ac);color:#fff;border:0;padding:12px 22px;border-radius:24px;font:inherit;text-decoration:none;cursor:pointer;margin:6px 6px 6px 0}
+.btn.alt{background:none;color:var(--ac);border:1px solid var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px 16px;margin:12px 0}
+.heart{font-size:3rem}
+#log{height:46vh;overflow-y:auto;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px}
+.m{max-width:82%;padding:8px 12px;border-radius:14px;margin:6px 0;font-family:system-ui,sans-serif;font-size:15px}
+.b{background:var(--ac2)}.u{background:var(--ac);color:#fff;margin-left:auto}
+.row{display:flex;gap:8px;margin-top:10px}.row input{flex:1;padding:12px;border-radius:22px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit}
+small{color:var(--mu)}
+</style></head><body>
+<header>
+<nav id="nav"></nav>
+<div class="lang"><button data-l="en">EN</button><button data-l="sw">SW</button><button data-l="kl">KLN</button></div>
+</header>
+<main>
+<section id="home"><div class="heart">💌</div><h1 id="h1"></h1><p id="h2"></p><button class="btn" data-go="chat" id="c1"></button><button class="btn alt" data-go="about" id="c2"></button></section>
+<section id="about"><h2 id="a0"></h2><p id="a1"></p><p id="a2"></p></section>
+<section id="why"><h2 id="w0"></h2><div class="card" id="w1"></div><div class="card" id="w2"></div><div class="card" id="w3"></div></section>
+<section id="chat"><h2 id="t0"></h2><div id="log"></div><div class="row"><input id="in" autocomplete="off"><button class="btn" id="send" style="margin:0"></button></div><small id="t1"></small></section>
+<section id="fun"><h2 id="f0"></h2><div class="card" id="jk"></div><button class="btn" id="bj"></button><div class="card" id="st"></div><button class="btn" id="bs"></button></section>
+<section id="contact"><h2 id="k0"></h2><p id="k1"></p><a class="btn" id="wa" target="_blank" rel="noopener"></a><a class="btn alt" id="call"></a><p><small id="k2"></small></p></section>
+</main>
+<script>
+// ====== EDIT THESE ======
+var MY_NUMBER="254702641194"; // Hezron's WhatsApp number, format 2547XXXXXXXX
+var MY_NAME="Hezron Ruto";
+// ========================
+var P=new URLSearchParams(location.search),NAME=(P.get('name')||'').slice(0,30);
+var L='en';try{L=localStorage.getItem('l')||'en'}catch(e){}
+var T={
+en:{nav:['Home','About Me','Why You','Chat','Fun','Contact'],h1:'Ukoaje mrembo 💛 This message is for you.',h2:"I'm {m}. I made this little place to say something honest and kind. Please take your time, and feel free to chat with my assistant below.",c1:'Chat with me',c2:'Read my story',a0:'About me',a1:"I'm {m}, from Bomet, a student at the University of Kabianga studying Education. I am training to be a teacher, which means I am learning patience, kindness and how to really listen.",a2:"I work hard, I value family and honesty, and I believe the best things in life begin with a simple, respectful hello.",w0:'Why you',w1:'🌸 Your kindness is the first thing people notice about you.',w2:'🌸 Talking to you makes an ordinary day better.',w3:'🌸 I would like to know you better, only if you are comfortable with that.',t0:'Chat',t1:'Replies here are automatic. You can also reach me directly in Contact.',ph:'Type a message...',send:'Send',k0:'Contact',k1:'If you would like to talk, I would be happy to hear from you. If not, I fully respect that too.',wa:'WhatsApp me',call:'Call me',k2:'No pressure at all.',f0:'Laughs & stories',fj:'Another joke',fs:'Another story'},
+sw:{nav:['Nyumbani','Kunihusu','Kwa Nini Wewe','Gumzo','Furaha','Mawasiliano'],h1:'Ukoaje mrembo 💛 Ujumbe huu ni wako.',h2:'Naitwa {m}. Nimetengeneza tovuti hii ndogo kusema jambo la kweli na la heshima. Chukua muda wako, na unaweza kupiga gumzo na msaidizi wangu hapa chini.',c1:'Piga gumzo',c2:'Soma hadithi yangu',a0:'Kunihusu',a1:'Mimi ni {m}, kutoka Bomet, mwanafunzi wa Elimu katika Chuo Kikuu cha Kabianga. Ninasomea ualimu, ambayo inamaanisha ninajifunza subira, wema na kusikiliza kwa dhati.',a2:'Napenda kufanya kazi kwa bidii, nathamini familia na ukweli, na naamini mambo mazuri huanza na salamu rahisi na ya heshima.',w0:'Kwa nini wewe',w1:'🌸 Wema wako ndio jambo la kwanza watu huliona kwako.',w2:'🌸 Kuzungumza nawe hufanya siku ya kawaida kuwa nzuri.',w3:'🌸 Ningependa kukufahamu zaidi, ikiwa tu uko huru kufanya hivyo.',t0:'Gumzo',t1:'Majibu hapa ni ya kiotomatiki. Unaweza pia kuniandikia moja kwa moja kupitia Mawasiliano.',ph:'Andika ujumbe...',send:'Tuma',k0:'Mawasiliano',k1:'Ukipenda tuzungumze, nitafurahi kukusikia. Usipopenda, naheshimu uamuzi wako kabisa.',wa:'Nitumie WhatsApp',call:'Nipigie simu',k2:'Hakuna shinikizo lolote.',f0:'Vichekesho na hadithi',fj:'Kichekesho kingine',fs:'Hadithi nyingine'},
+kl:{h1:'Chamgei! Ukoaje mrembo 💛'}
+};
+var R={
+en:{greet:"Hello! 😊 I'm {m}'s assistant. He made this page for you. How are you today? Ask me for a joke, a story, or any school question.",who:"I'm an automatic assistant for {m}, an Education student at the University of Kabianga. He built this page himself, and he'd love to know you better.",why:"Because he thinks you are kind and special, and he wanted to say it honestly and respectfully.",yes:"That makes him happy! 💛 You can message him directly on WhatsApp in the Contact page.",no:"Thank you for being honest. That's completely okay, and he will respect it. Wishing you all the best. 🌸",thanks:"You're most welcome! 😊",how:"I'm doing well, thank you! And you?",def:"Thank you for your message. I'm only an automatic assistant, so for a real conversation please reach {m} on the Contact page. 😊"},
+sw:{greet:"Habari! 😊 Mimi ni msaidizi wa {m}. Ametengeneza ukurasa huu kwa ajili yako. Hujambo leo? Niombe kichekesho, hadithi, au swali lolote la shule.",who:"Mimi ni msaidizi wa kiotomatiki wa {m}, mwanafunzi wa Elimu katika Chuo Kikuu cha Kabianga. Alitengeneza ukurasa huu mwenyewe, na angependa kukufahamu zaidi.",why:"Kwa sababu anakuona wewe ni mwema na wa pekee, na alitaka kusema hivyo kwa ukweli na heshima.",yes:"Hilo litamfurahisha sana! 💛 Unaweza kumtumia ujumbe moja kwa moja WhatsApp kupitia ukurasa wa Mawasiliano.",no:"Asante kwa ukweli wako. Hakuna shida, na ataheshimu uamuzi wako. Nakutakia kila la heri. 🌸",thanks:"Karibu sana! 😊",how:"Niko salama, asante! Na wewe?",def:"Asante kwa ujumbe wako. Mimi ni msaidizi wa kiotomatiki tu, kwa mazungumzo halisi tafadhali wasiliana na {m} kupitia ukurasa wa Mawasiliano. 😊"},
+kl:{thanks:"Kongoi! 😊"}
+};
+var $=function(i){return document.getElementById(i)};
+function t(k){var v=(T[L]&&T[L][k]);if(v===undefined)v=T.en[k];return typeof v==='string'?v.replace(/\{n\}/g,NAME).replace(/\{m\}/g,MY_NAME).replace(', ,',',').replace(' ,',','):v}
+function nav(){var ids=['home','about','why','chat','fun','contact'],n=t('nav');if(!Array.isArray(n)||T[L]&&!T[L].nav)n=T.en.nav;
+$('nav').innerHTML='';ids.forEach(function(id,i){var b=document.createElement('button');b.textContent=n[i];b.dataset.go=id;b.onclick=function(){go(id)};b.id='n_'+id;$('nav').appendChild(b)})}
+function paint(){nav();var set=function(id,k){$(id).textContent=t(k)};
+$('h1').textContent=t('h1').replace('Hello ,','Hello,').replace('Habari ,','Habari,');
+set('h2','h2');set('c1','c1');set('c2','c2');set('a0','a0');set('a1','a1');set('a2','a2');set('w0','w0');set('w1','w1');set('w2','w2');set('w3','w3');set('t0','t0');set('t1','t1');set('k0','k0');set('k1','k1');set('k2','k2');set('f0','f0');set('bj','fj');set('bs','fs');jk();stn();
+$('in').placeholder=t('ph');$('send').textContent=t('send');
+$('wa').textContent=t('wa');$('wa').href='https://wa.me/'+MY_NUMBER+'?text='+encodeURIComponent('Hi '+MY_NAME+', I saw your page 😊');
+$('call').textContent=t('call');$('call').href='tel:+'+MY_NUMBER;
+document.querySelectorAll('.lang button').forEach(function(b){b.classList.toggle('on',b.dataset.l===L)});
+document.documentElement.lang=L==='kl'?'en':L;cur(cs)}
+var cs='home';function cur(id){cs=id;document.querySelectorAll('section').forEach(function(s){s.classList.toggle('on',s.id===id)});document.querySelectorAll('#nav button').forEach(function(b){b.classList.toggle('on',b.dataset.go===id)});window.scrollTo(0,0)}
+function go(id){cur(id);if(id==='chat'&&!$('log').children.length)say('b',r('greet'))}
+function r(k){var v=(R[L]&&R[L][k])||R.en[k];return v.replace(/\{m\}/g,MY_NAME)}
+function say(w,x){var d=document.createElement('div');d.className='m '+w;d.textContent=x;$('log').appendChild(d);$('log').scrollTop=1e5}
+function intent(s){s=s.toLowerCase();
+if(/\b(no|not interested|hapana|sipendi|sitaki|leave me|stop)\b/.test(s))return'no';
+if(/\b(thank|thanks|asante|kongoi)\b/.test(s))return'thanks';
+if(/(who are you|you are who|ni nani|nani wewe)/.test(s))return'who';
+if(/(why me|why this|why are you|why did you|kwa nini mimi|kwa nini umenitumia)/.test(s))return'why';
+if(/\b(yes|yeah|sure|ok|okay|sawa|ndio|ndiyo|ee)\b/.test(s))return'yes';
+if(/(how are you|u fiti|uko aje|hujambo|uko poa)/.test(s))return'how';
+if(/\b(hi|hello|hey|mambo|habari|jambo|sasa|chamgei)\b/.test(s))return'greet';return'def'}
+var J={en:['Why did the student eat his homework? The teacher said it was a piece of cake.','I told my phone I need space. Now it says: Storage full.','Why dont scientists trust atoms? Because they make up everything.','I would tell you a chemistry joke, but I know I would not get a reaction.','As a future teacher I promise: if this joke was bad, I will give you extra marks for patience.'],sw:['Mgonjwa: Daktari, nasahau kila kitu! Daktari: Tangu lini? Mgonjwa: Tangu lini nini?','Niliambia simu yangu nahitaji nafasi. Sasa inasema: Hifadhi imejaa.','Nilimwambia mpenzi wangu nitakupa dunia. Akasema: Tuanze na chai ya asubuhi.','Mwalimu: Kwa nini umechelewa? Mwanafunzi: Kuna ishara ilisema Shule mbele, nenda polepole.','Mimi ni mwalimu mtarajiwa: ukicheka utapata alama kamili, ukikosa kucheka utapata kazi ya nyumbani!']};
+var S={en:['A farmer planted a small seed beside his home and watered it every morning, even when nothing showed. People laughed. One day a tall tree stood there, giving shade to the whole village. Good things grow quietly when you are patient and kind.','Two strangers shared an umbrella at a bus stop in the rain. They only talked about the weather, but each walked home smiling. Sometimes a small kindness is the start of a long friendship.','A little boy asked his grandmother, What makes a day beautiful? She smiled: Not the sun, my child, but the people who make you feel seen.'],sw:['Mkulima alipanda mbegu ndogo karibu na nyumba yake na kuimwagilia kila asubuhi, hata ilipokuwa haionekani. Watu walimcheka. Siku moja mti mrefu ulisimama pale, ukitoa kivuli kwa kijiji kizima. Mambo mazuri hukua kimya kimya kwa subira na wema.','Wageni wawili walishiriki mwavuli kituoni mvua ikinyesha. Walizungumza kuhusu hali ya hewa tu, lakini kila mmoja alienda nyumbani akitabasamu. Wakati mwingine wema mdogo ni mwanzo wa urafiki mrefu.','Mvulana mdogo alimuuliza bibi yake, Nini hufanya siku iwe nzuri? Alitabasamu: Si jua, mwanangu, bali watu wanaokufanya ujisikie kuthaminiwa.']};
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function jl(){return J[L]||J.en}function sl(){return S[L]||S.en}
+function jk(){$('jk').textContent=pick(jl())}function stn(){$('st').textContent=pick(sl())}
+$('bj').onclick=jk;$('bs').onclick=stn;
+async function ai(q){try{if(typeof claude==='undefined')return null;var s=await claude.use('sample');if(!s)return null;var lg=L==='sw'?'Kiswahili':'English';var o=await s('You are a friendly, respectful assistant on a personal website made by '+MY_NAME+'. Answer the question accurately and briefly (under 120 words) in '+lg+'. For academic questions explain clearly and correctly. Never pretend to be '+MY_NAME+'. Question: '+q,{cache:false});return o.text}catch(e){return null}}
+async function send(){var v=$('in').value.trim();if(!v)return;$('in').value='';say('u',v);var k=intent(v);
+if(/\b(joke|chekesho|kichekesho|cheka)\b/i.test(v))return setTimeout(function(){say('b',pick(jl()))},500);
+if(/\b(story|hadithi|stori)\b/i.test(v))return setTimeout(function(){say('b',pick(sl()))},500);
+if(k!=='def')return setTimeout(function(){say('b',r(k))},700);
+say('b','...');var d=$('log').lastChild;var a=await ai(v);d.textContent=a||r('def')}
+$('send').onclick=send;$('in').onkeydown=function(e){if(e.key==='Enter')send()};
+document.querySelectorAll('[data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
+document.querySelectorAll('.lang button').forEach(function(b){b.onclick=function(){L=b.dataset.l;try{localStorage.setItem('l',L)}catch(e){}$('log').innerHTML='';paint()}});
+paint();
+</script></body></html>
